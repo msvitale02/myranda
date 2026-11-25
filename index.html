@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#C4763A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Myranda">
+<title>Myranda — My Life System</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5EFE0;
+    --cream-dark: #EBE0C8;
+    --sand: #D4B896;
+    --terracotta: #C4763A;
+    --terra-dark: #9C5C28;
+    --terra-light: #E8976A;
+    --sage: #7A8C6E;
+    --sage-light: #B4C4A4;
+    --dusty-rose: #C4907A;
+    --brown: #5C3D2A;
+    --text: #3A2516;
+    --text-muted: #7A6050;
+    --white: #FDFAF4;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    max-width: 430px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  /* Aztec geometric border pattern SVG background */
+  .aztec-border {
+    height: 10px;
+    background: var(--terracotta);
+    background-image: repeating-linear-gradient(
+      90deg,
+      transparent 0px, transparent 8px,
+      var(--terra-dark) 8px, var(--terra-dark) 10px,
+      transparent 10px, transparent 18px,
+      var(--terra-light) 18px, var(--terra-light) 20px
+    );
+  }
+
+  /* Header */
+  header {
+    background: var(--white);
+    border-bottom: 1px solid var(--cream-dark);
+    padding: 1.25rem 1.25rem 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .greeting {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--brown);
+    line-height: 1.2;
+  }
+
+  .greeting span {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+  }
+
+  .date-badge {
+    background: var(--terracotta);
+    color: var(--white);
+    border-radius: 10px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.3;
+    min-width: 52px;
+  }
+
+  .date-badge strong {
+    display: block;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  /* Nav tabs */
+  .nav-tabs {
+    display: flex;
+    gap: 6px;
+    margin-top: 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+
+  .nav-tabs::-webkit-scrollbar { display: none; }
+
+  .nav-tab {
+    flex-shrink: 0;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+    color: var(--text-muted);
+    border-color: var(--cream-dark);
+  }
+
+  .nav-tab.active {
+    background: var(--terracotta);
+    color: var(--white);
+    border-color: var(--terracotta);
+  }
+
+  /* Main scroll area */
+  main {
+    padding: 1rem 1rem 5rem;
+  }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* Module cards */
+  .card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 14px;
+    border: 1px solid var(--cream-dark);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--terracotta);
+    border-radius: 4px 0 0 4px;
+  }
+
+  .card.sage::before { background: var(--sage); }
+  .card.rose::before { background: var(--dusty-rose); }
+  .card.sand::before { background: var(--sand); }
+  .card.brown::before { background: var(--brown); }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .card-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+  }
+
+  .icon-terra { background: #F5E0D0; }
+  .icon-sage { background: #DCE8D4; }
+  .icon-rose { background: #F0DDD8; }
+  .icon-sand { background: #EDE0CC; }
+  .icon-brown { background: #E0D0C4; }
+
+  /* Schedule blocks */
+  .time-block {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--cream-dark);
+  }
+
+  .time-block:last-child { border-bottom: none; }
+
+  .time-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+    min-width: 40px;
+    padding-top: 2px;
+  }
+
+  .block-pill {
+    flex: 1;
+    background: var(--cream);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    border-left: 3px solid var(--terracotta);
+  }
+
+  .block-pill.work { border-left-color: var(--terracotta); }
+  .block-pill.school { border-left-color: var(--sage); }
+  .block-pill.personal { border-left-color: var(--dusty-rose); }
+  .block-pill.travel { border-left-color: var(--sand); }
+  .block-pill.free { border-left-color: var(--cream-dark); }
+
+  .block-type {
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Quote section */
+  .quote-box {
+    background: var(--terracotta);
+    border-radius: 16px;
+    padding: 1.25rem;
+    margin-bottom: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .quote-box::after {
+    content: '"';
+    position: absolute;
+    right: 16px;
+    top: -10px;
+    font-family: 'Playfair Display', serif;
+    font-size: 80px;
+    color: rgba(255,255,255,0.12);
+    line-height: 1;
+  }
+
+  .quote-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--white);
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+
+  .quote-author {
+    font-size: 12px;
+    color: rgba(253,250,244,0.75);
+    font-weight: 500;
+  }
+
+  .quote-nav {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .quote-btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: var(--white);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  /* Checklist */
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--cream-dark);
+    cursor: pointer;
+  }
+
+  .check-item:last-child { border-bottom: none; }
+
+  .check-box {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 1.5px solid var(--sand);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .check-box.checked {
+    background: var(--sage);
+    border-color: var(--sage);
+    color: white;
+  }
+
+  .check-label {
+    font-size: 14px;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .check-label.done {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+
+  /* Journal */
+  .journal-prompt {
+    background: var(--cream);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-left: 3px solid var(--dusty-rose);
+  }
+
+  .prompt-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--dusty-rose);
+    font-weight: 500;
+    margin-bottom: 5px;
+  }
+
+  .prompt-text {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  textarea {
+    width: 100%;
+    background: var(--cream);
+    border: 1px solid var(--cream-dark);
+    border-radius: 10px;
+    padding: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    resize: none;
+    outline: none;
+    min-height: 120px;
+    line-height: 1.6;
+  }
+
+  textarea:focus {
+    border-color: var(--sand);
+  }
+
+  textarea::placeholder { color: var(--text-muted); }
+
+  /* Tags / interests */
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .tag {
+    background: var(--cream);
+    border: 1px solid var(--cream-dark);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .tag:hover, .tag.active {
+    background: var(--terracotta);
+    color: var(--white);
+    border-color: var(--terracotta);
+  }
+
+  /* Add button */
+  .add-btn {
+    width: 100%;
+    background: transparent;
+    border: 1.5px dashed var(--sand);
+    border-radius: 10px;
+    padding: 10px;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.2s;
+  }
+
+  .add-btn:hover {
+    border-color: var(--terracotta);
+    color: var(--terracotta);
+  }
+
+  /* Goal progress */
+  .goal-item {
+    margin-bottom: 14px;
+  }
+
+  .goal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .goal-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .goal-pct {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .progress-bar {
+    height: 6px;
+    background: var(--cream-dark);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--terracotta);
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+
+  .progress-fill.sage { background: var(--sage); }
+  .progress-fill.rose { background: var(--dusty-rose); }
+
+  /* Tips */
+  .tip-card {
+    background: var(--cream);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .tip-emoji {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .tip-text {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  .tip-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-bottom: 3px;
+  }
+
+  /* Bottom nav */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: var(--white);
+    border-top: 1px solid var(--cream-dark);
+    display: flex;
+    padding: 8px 0 16px;
+    z-index: 100;
+  }
+
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    padding: 4px;
+    border: none;
+    background: none;
+  }
+
+  .nav-icon {
+    font-size: 20px;
+    color: var(--text-muted);
+    transition: color 0.2s;
+  }
+
+  .nav-item.active .nav-icon { color: var(--terracotta); }
+
+  .nav-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+  }
+
+  .nav-item.active .nav-label { color: var(--terracotta); }
+
+  /* Aztec decorative divider */
+  .aztec-divider {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 12px 0 8px;
+  }
+
+  .aztec-divider::before, .aztec-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: repeating-linear-gradient(90deg, var(--sand) 0, var(--sand) 4px, transparent 4px, transparent 8px);
+  }
+
+  .aztec-divider span {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+  }
+
+  /* Modal overlay */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(58,37,22,0.5);
+    z-index: 200;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--white);
+    border-radius: 20px 20px 0 0;
+    padding: 1.5rem 1.25rem 2.5rem;
+    width: 100%;
+    max-width: 430px;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+
+  .modal-handle {
+    width: 36px;
+    height: 4px;
+    background: var(--cream-dark);
+    border-radius: 2px;
+    margin: 0 auto 1.25rem;
+  }
+
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--brown);
+    margin-bottom: 1rem;
+  }
+
+  input[type="text"], input[type="time"], select {
+    width: 100%;
+    background: var(--cream);
+    border: 1px solid var(--cream-dark);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    margin-bottom: 10px;
+  }
+
+  input:focus, select:focus { border-color: var(--sand); }
+
+  .row { display: flex; gap: 8px; }
+  .row > * { flex: 1; }
+
+  .save-btn {
+    width: 100%;
+    background: var(--terracotta);
+    color: var(--white);
+    border: none;
+    border-radius: 12px;
+    padding: 13px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.2s;
+  }
+
+  .save-btn:hover { background: var(--terra-dark); }
+
+  .section-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--brown);
+    margin-bottom: 14px;
+    padding-top: 4px;
+  }
+
+  /* Aztec corner ornament on quote */
+  .aztec-corner {
+    position: absolute;
+    top: 10px; left: 12px;
+    opacity: 0.2;
+  }
+
+  /* ---------- added: saving, delete, empty states ---------- */
+  .empty { font-size: 13px; color: var(--text-muted); padding: 4px 0; }
+  .hint { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+
+  .del-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 20px;
+    line-height: 1;
+    padding: 2px 8px;
+    cursor: pointer;
+    opacity: 0.6;
+    flex-shrink: 0;
+  }
+  .del-btn:hover, .del-btn:focus-visible { opacity: 1; color: var(--terra-dark); }
+
+  .time-block { align-items: center; }
+  .time-label { line-height: 1.5; }
+
+  .entry { padding: 10px 0; border-bottom: 1px solid var(--cream-dark); }
+  .entry:last-child { border-bottom: none; }
+  .entry-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; }
+  .entry-meta { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+  .entry-text { font-size: 13px; color: var(--text); line-height: 1.5; white-space: pre-wrap; }
+
+  .tag-x { margin-left: 8px; opacity: 0.55; font-size: 14px; }
+  .tag-x:hover { opacity: 1; }
+
+  .week-strip { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+  .week-day {
+    background: var(--cream);
+    border-radius: 10px;
+    padding: 8px 0;
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .week-day strong { display: block; font-size: 15px; font-weight: 500; color: var(--text); margin-top: 2px; }
+  .week-day.today { background: var(--terracotta); color: var(--white); }
+  .week-day.today strong { color: var(--white); }
+
+  button.goal-pct {
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px 6px;
+    text-decoration: underline dotted;
+    text-underline-offset: 3px;
+  }
+
+  .habit-row {
+    display: grid;
+    grid-template-columns: 1fr repeat(7, 28px);
+    gap: 6px;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .habit-head { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+  .habit-head span { text-align: center; }
+  .habit-head .today-col { color: var(--terracotta); font-weight: 500; }
+  .habit-name { font-size: 12px; color: var(--text); }
+  .habit-cell {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: none;
+    background: var(--cream-dark);
+    cursor: pointer;
+    margin: 0 auto;
+    padding: 0;
+  }
+  .habit-cell.on { background: var(--sage); }
+
+  #toast {
+    position: fixed;
+    left: 50%;
+    bottom: 84px;
+    transform: translateX(-50%) translateY(12px);
+    background: var(--brown);
+    color: var(--white);
+    padding: 9px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 300;
+    max-width: 90%;
+    text-align: center;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    #toast, .progress-fill, .nav-tab { transition: none; }
+  }
+  button:focus-visible, .tag:focus-visible { outline: 2px solid var(--terracotta); outline-offset: 2px; }
+</style>
+</head>
+<body>
+
+<div class="aztec-border"></div>
+
+<header>
+  <div class="header-top">
+    <div class="greeting">
+      <span id="time-greeting">Good morning,</span>
+      Myranda ✦
+    </div>
+    <div class="date-badge">
+      <strong id="date-day">--</strong>
+      <span id="date-mon">---</span>
+    </div>
+  </div>
+  <nav class="nav-tabs" role="tablist">
+    <button class="nav-tab active" onclick="switchTab('home')" role="tab">Home</button>
+    <button class="nav-tab" onclick="switchTab('schedule')" role="tab">Schedule</button>
+    <button class="nav-tab" onclick="switchTab('journal')" role="tab">Journal</button>
+    <button class="nav-tab" onclick="switchTab('selfcare')" role="tab">Self-care</button>
+    <button class="nav-tab" onclick="switchTab('interests')" role="tab">Interests</button>
+    <button class="nav-tab" onclick="switchTab('goals')" role="tab">Goals</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HOME -->
+  <section id="tab-home" class="section active">
+
+    <!-- Quote -->
+    <div class="quote-box">
+      <svg class="aztec-corner" width="32" height="32" viewBox="0 0 32 32" fill="white">
+        <rect x="0" y="0" width="8" height="8"/><rect x="12" y="0" width="8" height="8"/>
+        <rect x="0" y="12" width="8" height="8"/><rect x="6" y="6" width="4" height="4" fill="none" stroke="white" stroke-width="1.5"/>
+      </svg>
+      <p class="quote-text" id="quote-text">"The most common form of despair is not being who you are."</p>
+      <p class="quote-author" id="quote-author">— Søren Kierkegaard</p>
+      <div class="quote-nav">
+        <button class="quote-btn" onclick="prevQuote()">← prev</button>
+        <button class="quote-btn" onclick="nextQuote()">next →</button>
+      </div>
+    </div>
+
+    <!-- Today snapshot -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Today at a glance</span>
+        <div class="card-icon icon-terra">📅</div>
+      </div>
+      <div id="home-schedule-preview"></div>
+    </div>
+
+    <!-- Self-care today -->
+    <div class="card sage">
+      <div class="card-header">
+        <span class="card-title">Self-care today</span>
+        <div class="card-icon icon-sage">🌿</div>
+      </div>
+      <div id="home-selfcare-preview"></div>
+    </div>
+
+    <!-- Shadow work -->
+    <div class="card rose">
+      <div class="card-header">
+        <span class="card-title">Reflection prompt</span>
+        <div class="card-icon icon-rose">🪷</div>
+      </div>
+      <div class="journal-prompt">
+        <p class="prompt-label">Shadow work</p>
+        <p class="prompt-text" id="home-prompt-text">Loading today's prompt...</p>
+      </div>
+      <button class="add-btn" onclick="switchTab('journal')">Open journal →</button>
+    </div>
+
+  </section>
+
+  <!-- SCHEDULE -->
+  <section id="tab-schedule" class="section">
+    <p class="section-heading">My schedule</p>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Today's blocks</span>
+        <div class="card-icon icon-terra">⏰</div>
+      </div>
+      <div id="schedule-list"></div>
+      <button class="add-btn" onclick="openModal('schedule')">+ Add a block</button>
+    </div>
+
+    <div class="card sand">
+      <div class="card-header">
+        <span class="card-title">This week</span>
+        <div class="card-icon icon-sand">📆</div>
+      </div>
+      <div id="week-view"></div>
+    </div>
+  </section>
+
+  <!-- JOURNAL -->
+  <section id="tab-journal" class="section">
+    <p class="section-heading">Journal & reflection</p>
+
+    <div class="card rose">
+      <div class="card-header">
+        <span class="card-title">Today's prompt</span>
+        <div class="card-icon icon-rose">🪷</div>
+      </div>
+      <div class="journal-prompt">
+        <p class="prompt-label">Shadow work</p>
+        <p class="prompt-text" id="journal-prompt-text"></p>
+      </div>
+      <button class="quote-btn" style="background: var(--dusty-rose); color:white; border:none; border-radius:8px; padding:6px 14px; font-size:13px; cursor:pointer; margin-bottom:10px;" onclick="newPrompt()">New prompt</button>
+      <textarea id="journal-entry" placeholder="Begin writing here... this space is entirely yours." rows="6"></textarea>
+      <button class="save-btn" onclick="saveJournal()">Save entry</button>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Past entries</span>
+        <div class="card-icon icon-terra">📖</div>
+      </div>
+      <div id="journal-history"></div>
+    </div>
+  </section>
+
+  <!-- SELF-CARE -->
+  <section id="tab-selfcare" class="section">
+    <p class="section-heading">Self-care space</p>
+
+    <div class="card sage">
+      <div class="card-header">
+        <span class="card-title">Daily rituals</span>
+        <div class="card-icon icon-sage">🌿</div>
+      </div>
+      <div id="selfcare-checklist"></div>
+      <button class="add-btn" onclick="openModal('selfcare')">+ Add ritual</button>
+    </div>
+
+    <div class="aztec-divider"><span>Tips</span></div>
+
+    <div class="card rose">
+      <div class="card-header">
+        <span class="card-title">Beauty & skin</span>
+        <div class="card-icon icon-rose">✨</div>
+      </div>
+      <div class="tip-card">
+        <span class="tip-emoji">💧</span>
+        <div><p class="tip-label">Hydration</p><p class="tip-text">Drink a glass of water before coffee each morning to jumpstart your lymphatic system.</p></div>
+      </div>
+      <div class="tip-card">
+        <span class="tip-emoji">🌙</span>
+        <div><p class="tip-label">Evening ritual</p><p class="tip-text">Double cleanse at night — oil cleanser first, then a gentle foam to remove SPF fully.</p></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Fitness & movement</span>
+        <div class="card-icon icon-terra">🏃‍♀️</div>
+      </div>
+      <div class="tip-card">
+        <span class="tip-emoji">🧘</span>
+        <div><p class="tip-label">Movement</p><p class="tip-text">10 minutes of morning stretching activates circulation and reduces cortisol before your day starts.</p></div>
+      </div>
+      <div class="tip-card">
+        <span class="tip-emoji">🌿</span>
+        <div><p class="tip-label">Nutrition</p><p class="tip-text">Add one anti-inflammatory food daily — turmeric, blueberries, walnuts, or leafy greens.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERESTS -->
+  <section id="tab-interests" class="section">
+    <p class="section-heading">Extra interests</p>
+
+    <div class="card sand">
+      <div class="card-header">
+        <span class="card-title">My hobbies & passions</span>
+        <div class="card-icon icon-sand">🌵</div>
+      </div>
+      <div class="tag-cloud" id="interests-tags"></div>
+      <button class="add-btn" onclick="openModal('interest')" style="margin-top:12px">+ Add interest</button>
+    </div>
+
+    <div class="card brown">
+      <div class="card-header">
+        <span class="card-title">Reading list</span>
+        <div class="card-icon icon-brown">📚</div>
+      </div>
+      <div id="reading-list"></div>
+      <button class="add-btn" onclick="openModal('book')">+ Add book</button>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Side notes & ideas</span>
+        <div class="card-icon icon-terra">💡</div>
+      </div>
+      <textarea id="ideas-notes" placeholder="Capture random ideas, creative sparks, things to explore later..." rows="4"></textarea>
+      <button class="save-btn" style="margin-top:8px" onclick="saveIdeas()">Save notes</button>
+    </div>
+  </section>
+
+  <!-- GOALS -->
+  <section id="tab-goals" class="section">
+    <p class="section-heading">Goals & growth</p>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Main goals</span>
+        <div class="card-icon icon-terra">🎯</div>
+      </div>
+      <div id="goals-list"></div>
+      <button class="add-btn" onclick="openModal('goal')">+ Add goal</button>
+    </div>
+
+    <div class="card sage">
+      <div class="card-header">
+        <span class="card-title">Habit tracker</span>
+        <div class="card-icon icon-sage">✦</div>
+      </div>
+      <div id="habit-tracker"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Bottom nav -->
+<nav class="bottom-nav" aria-label="Main navigation">
+  <button class="nav-item active" onclick="switchSection('home', this)" aria-label="Home">
+    <span class="nav-icon">🏠</span>
+    <span class="nav-label">Home</span>
+  </button>
+  <button class="nav-item" onclick="switchSection('schedule', this)" aria-label="Schedule">
+    <span class="nav-icon">📅</span>
+    <span class="nav-label">Schedule</span>
+  </button>
+  <button class="nav-item" onclick="switchSection('journal', this)" aria-label="Journal">
+    <span class="nav-icon">📓</span>
+    <span class="nav-label">Journal</span>
+  </button>
+  <button class="nav-item" onclick="switchSection('selfcare', this)" aria-label="Self-care">
+    <span class="nav-icon">🌿</span>
+    <span class="nav-label">Self-care</span>
+  </button>
+  <button class="nav-item" onclick="switchSection('interests', this)" aria-label="Interests">
+    <span class="nav-icon">✦</span>
+    <span class="nav-label">More</span>
+  </button>
+</nav>
+
+<!-- Add block modal -->
+<div class="modal-overlay" id="modal-schedule">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <p class="modal-title">Add a schedule block</p>
+    <div class="row">
+      <input type="time" id="block-start" value="09:00">
+      <input type="time" id="block-end" value="10:00">
+    </div>
+    <input type="text" id="block-title" placeholder="What is this block? (e.g. Study, Work, Gym)">
+    <select id="block-type">
+      <option value="work">Work</option>
+      <option value="school">School</option>
+      <option value="personal">Personal</option>
+      <option value="travel">Travel</option>
+      <option value="free">Free time</option>
+    </select>
+    <button class="save-btn" onclick="addBlock()">Save block</button>
+    <button class="add-btn" onclick="closeModal('schedule')" style="margin-top:8px">Cancel</button>
+  </div>
+</div>
+
+<!-- Add selfcare modal -->
+<div class="modal-overlay" id="modal-selfcare">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <p class="modal-title">Add a daily ritual</p>
+    <input type="text" id="ritual-input" placeholder="e.g. Morning stretch, Skincare routine, Walk outside">
+    <button class="save-btn" onclick="addRitual()">Save ritual</button>
+    <button class="add-btn" onclick="closeModal('selfcare')">Cancel</button>
+  </div>
+</div>
+
+<!-- Add interest modal -->
+<div class="modal-overlay" id="modal-interest">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <p class="modal-title">Add an interest</p>
+    <input type="text" id="interest-input" placeholder="e.g. Pottery, Astronomy, Hiking">
+    <button class="save-btn" onclick="addInterest()">Save</button>
+    <button class="add-btn" onclick="closeModal('interest')">Cancel</button>
+  </div>
+</div>
+
+<!-- Add book modal -->
+<div class="modal-overlay" id="modal-book">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <p class="modal-title">Add to reading list</p>
+    <input type="text" id="book-input" placeholder="Title — Author">
+    <button class="save-btn" onclick="addBook()">Save</button>
+    <button class="add-btn" onclick="closeModal('book')">Cancel</button>
+  </div>
+</div>
+
+<!-- Add goal modal -->
+<div class="modal-overlay" id="modal-goal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <p class="modal-title">Add a goal</p>
+    <input type="text" id="goal-input" placeholder="e.g. Learn Spanish, Run 5K">
+    <button class="save-btn" onclick="addGoal()">Save goal</button>
+    <button class="add-btn" onclick="closeModal('goal')">Cancel</button>
+  </div>
+</div>
+
+<script>
+const quotes = [
+  { text: "The most common form of despair is not being who you are.", author: "Søren Kierkegaard" },
+  { text: "You are enough. A thousand times enough.", author: "Atticus" },
+  { text: "She remembered who she was and the game changed.", author: "Lalah Delia" },
+  { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+  { text: "I am not afraid of storms, for I am learning how to sail my ship.", author: "Louisa May Alcott" },
+  { text: "You have been assigned this mountain to show others it can be moved.", author: "Mel Robbins" },
+  { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+  { text: "In the middle of every difficulty lies opportunity.", author: "Albert Einstein" },
+  { text: "It always seems impossible until it is done.", author: "Nelson Mandela" },
+  { text: "Your life is your message to the world. Make sure it's inspiring.", author: "Lorrin L. Lee" },
+  { text: "What you seek is seeking you.", author: "Rumi" },
+  { text: "Growth is never by mere chance; it is the result of forces working together.", author: "James Cash Penney" }
+];
+
+const shadowPrompts = [
+  "What emotion do you find hardest to feel, and where in your body do you feel it?",
+  "What belief about yourself did you inherit from your family that no longer serves you?",
+  "When do you feel most like yourself? What does that tell you?",
+  "What do you most judge in others that might be a reflection of something in yourself?",
+  "What would you do if you knew no one would judge you?",
+  "What old version of yourself are you still carrying that needs to be released?",
+  "Where in your life are you playing small? What would it look like to step fully in?",
+  "What is something you've never told anyone that still weighs on you?",
+  "What does your inner critic say most often? Is it true?",
+  "What do you wish someone had told you five years ago?",
+  "Where do you seek validation outside of yourself that you could give yourself?",
+  "What are you most afraid of losing? What does that fear tell you about what you value?"
+];
+
+const STORE_KEY = "myranda-life-system-v1";
+const habits = ["Morning ritual", "Movement", "Journal", "Water", "Sleep 8hrs"];
+const TAB_ORDER = ["home", "schedule", "journal", "selfcare", "interests", "goals"];
+
+let quoteIndex = 0;
+let promptIndex = 0;
+
+let scheduleBlocks = [
+  { start: "07:00", end: "08:00", title: "Morning routine", type: "personal" },
+  { start: "09:00", end: "12:00", title: "Class / Study", type: "school" },
+  { start: "13:00", end: "15:00", title: "Work block", type: "work" },
+  { start: "17:00", end: "18:00", title: "Movement", type: "personal" }
+];
+
+let selfcareItems = [
+  { label: "Drink 8 glasses of water", done: false },
+  { label: "10 min morning stretch", done: false },
+  { label: "Skincare routine", done: false },
+  { label: "Get outside for fresh air", done: false },
+  { label: "8 hours of sleep", done: false }
+];
+
+let journalEntries = [];
+let interests = [
+  { name: "Reading", active: true },
+  { name: "Art", active: false },
+  { name: "Music", active: false },
+  { name: "Cooking", active: false },
+  { name: "Nature walks", active: false },
+  { name: "Journaling", active: false },
+  { name: "Photography", active: false }
+];
+let readingList = [
+  { title: "The Alchemist — Paulo Coelho", read: false },
+  { title: "Women Who Run With the Wolves", read: false },
+  { title: "Becoming — Michelle Obama", read: false }
+];
+let goals = [
+  { name: "Finish semester strong", pct: 70, color: "" },
+  { name: "Daily movement habit", pct: 45, color: "sage" },
+  { name: "Read 12 books this year", pct: 25, color: "rose" }
+];
+let habitGrid = {};
+let habitWeek = "";
+let selfcareDay = "";
+let ideasNotes = "";
+let journalDraft = "";
+
+/* ---------- helpers ---------- */
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+function pad(n) { return String(n).padStart(2, "0"); }
+
+function dayKey(d) {
+  d = d || new Date();
+  return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+}
+
+// Monday-based week; index 0 = Monday ... 6 = Sunday
+function todayIdx() { return (new Date().getDay() + 6) % 7; }
+
+function weekKey() {
+  const d = new Date();
+  d.setDate(d.getDate() - todayIdx());
+  return dayKey(d);
+}
+
+let toastTimer;
+function toast(msg) {
+  let t = document.getElementById("toast");
+  if (!t) {
+    t = document.createElement("div");
+    t.id = "toast";
+    t.setAttribute("role", "status");
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 1800);
+}
+
+/* ---------- saving ---------- */
+let storageWarned = false;
+
+function saveState() {
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify({
+      scheduleBlocks, selfcareItems, journalEntries, interests, readingList,
+      goals, habitGrid, habitWeek, selfcareDay, ideasNotes, journalDraft
+    }));
+  } catch (e) {
+    if (!storageWarned) {
+      storageWarned = true;
+      toast("Saving is blocked in this browser, so changes won't be kept.");
+    }
+  }
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) {
+      const s = JSON.parse(raw);
+      if (Array.isArray(s.scheduleBlocks)) scheduleBlocks = s.scheduleBlocks;
+      if (Array.isArray(s.selfcareItems)) selfcareItems = s.selfcareItems;
+      if (Array.isArray(s.journalEntries)) journalEntries = s.journalEntries;
+      if (Array.isArray(s.interests)) interests = s.interests;
+      if (Array.isArray(s.readingList)) readingList = s.readingList;
+      if (Array.isArray(s.goals)) goals = s.goals;
+      if (s.habitGrid && typeof s.habitGrid === "object") habitGrid = s.habitGrid;
+      if (typeof s.habitWeek === "string") habitWeek = s.habitWeek;
+      if (typeof s.selfcareDay === "string") selfcareDay = s.selfcareDay;
+      if (typeof s.ideasNotes === "string") ideasNotes = s.ideasNotes;
+      if (typeof s.journalDraft === "string") journalDraft = s.journalDraft;
+    }
+  } catch (e) { /* start fresh if saved data is unreadable */ }
+
+  // Daily rituals start unchecked each new day
+  if (selfcareDay !== dayKey()) {
+    selfcareItems.forEach(i => { i.done = false; });
+    selfcareDay = dayKey();
+  }
+  // Habit tracker starts blank each new week
+  if (habitWeek !== weekKey()) {
+    habitGrid = {};
+    habitWeek = weekKey();
+  }
+  habits.forEach(h => {
+    if (!Array.isArray(habitGrid[h]) || habitGrid[h].length !== 7) habitGrid[h] = [false, false, false, false, false, false, false];
+  });
+}
+
+/* ---------- init ---------- */
+function init() {
+  loadState();
+
+  const now = new Date();
+  const hours = now.getHours();
+  const greet = hours < 12 ? "Good morning," : hours < 17 ? "Good afternoon," : "Good evening,";
+  document.getElementById("time-greeting").textContent = greet;
+
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  document.getElementById("date-day").textContent = now.getDate();
+  document.getElementById("date-mon").textContent = months[now.getMonth()];
+
+  promptIndex = now.getDay() % shadowPrompts.length;
+  quoteIndex = now.getDay() % quotes.length;
+
+  const entry = document.getElementById("journal-entry");
+  entry.value = journalDraft;
+  entry.addEventListener("input", () => { journalDraft = entry.value; saveState(); });
+
+  const notes = document.getElementById("ideas-notes");
+  notes.value = ideasNotes;
+  notes.addEventListener("input", () => { ideasNotes = notes.value; saveState(); });
+
+  saveState();
+  renderAll();
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
+}
+
+function renderAll() {
+  renderQuote();
+  renderSchedule();
+  renderWeek();
+  renderSelfcare();
+  renderHomePreview();
+  renderJournalHistory();
+  renderInterests();
+  renderBooks();
+  renderGoals();
+  renderHabits();
+  document.getElementById("journal-prompt-text").textContent = shadowPrompts[promptIndex];
+  document.getElementById("home-prompt-text").textContent = shadowPrompts[promptIndex];
+}
+
+/* ---------- quotes & prompts ---------- */
+function renderQuote() {
+  const q = quotes[quoteIndex];
+  document.getElementById("quote-text").textContent = `"${q.text}"`;
+  document.getElementById("quote-author").textContent = `— ${q.author}`;
+}
+
+function nextQuote() { quoteIndex = (quoteIndex + 1) % quotes.length; renderQuote(); }
+function prevQuote() { quoteIndex = (quoteIndex - 1 + quotes.length) % quotes.length; renderQuote(); }
+function newPrompt() {
+  promptIndex = (promptIndex + 1) % shadowPrompts.length;
+  document.getElementById("journal-prompt-text").textContent = shadowPrompts[promptIndex];
+  document.getElementById("home-prompt-text").textContent = shadowPrompts[promptIndex];
+}
+
+/* ---------- schedule ---------- */
+function renderSchedule() {
+  const list = document.getElementById("schedule-list");
+  if (!scheduleBlocks.length) {
+    list.innerHTML = '<p class="empty">No blocks yet. Add your first one below.</p>';
+    return;
+  }
+  list.innerHTML = scheduleBlocks.map((b, i) => `
+    <div class="time-block">
+      <span class="time-label">${esc(b.start)}${b.end ? "<br>" + esc(b.end) : ""}</span>
+      <div class="block-pill ${esc(b.type)}">
+        <div class="block-type">${esc(b.type)}</div>
+        ${esc(b.title)}
+      </div>
+      <button class="del-btn" onclick="deleteBlock(${i})" aria-label="Delete ${esc(b.title)}">×</button>
+    </div>
+  `).join("");
+}
+
+function renderWeek() {
+  const names = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+  const start = new Date();
+  start.setDate(start.getDate() - todayIdx());
+  document.getElementById("week-view").innerHTML = `
+    <div class="week-strip">
+      ${names.map((n, i) => {
+        const d = new Date(start);
+        d.setDate(start.getDate() + i);
+        return `<div class="week-day ${i === todayIdx() ? "today" : ""}"><span>${n}</span><strong>${d.getDate()}</strong></div>`;
+      }).join("")}
+    </div>`;
+}
+
+function renderHomePreview() {
+  const el = document.getElementById("home-schedule-preview");
+  el.innerHTML = scheduleBlocks.length
+    ? scheduleBlocks.slice(0, 3).map(b => `
+        <div class="time-block">
+          <span class="time-label">${esc(b.start)}</span>
+          <div class="block-pill ${esc(b.type)}"><span class="block-type">${esc(b.type)}</span> ${esc(b.title)}</div>
+        </div>`).join("")
+    : '<p class="empty">Nothing scheduled. Add blocks on the Schedule tab.</p>';
+
+  const sc = document.getElementById("home-selfcare-preview");
+  sc.innerHTML = selfcareItems.length
+    ? selfcareItems.slice(0, 3).map((item, i) => `
+        <div class="check-item" onclick="toggleSelfcare(${i})">
+          <div class="check-box ${item.done ? "checked" : ""}">${item.done ? "✓" : ""}</div>
+          <span class="check-label ${item.done ? "done" : ""}">${esc(item.label)}</span>
+        </div>`).join("")
+    : '<p class="empty">No rituals yet. Add some on the Self-care tab.</p>';
+}
+
+function addBlock() {
+  const start = document.getElementById("block-start").value;
+  const end = document.getElementById("block-end").value;
+  const title = document.getElementById("block-title").value.trim();
+  const type = document.getElementById("block-type").value;
+  if (!title) { toast("Give the block a name first."); return; }
+  scheduleBlocks.push({ start, end, title, type });
+  scheduleBlocks.sort((a, b) => a.start.localeCompare(b.start));
+  saveState();
+  renderSchedule();
+  renderHomePreview();
+  closeModal("schedule");
+  document.getElementById("block-title").value = "";
+  toast("Block saved");
+}
+
+function deleteBlock(i) {
+  if (!confirm("Delete this block?")) return;
+  scheduleBlocks.splice(i, 1);
+  saveState();
+  renderSchedule();
+  renderHomePreview();
+}
+
+/* ---------- self-care ---------- */
+function renderSelfcare() {
+  const el = document.getElementById("selfcare-checklist");
+  if (!selfcareItems.length) {
+    el.innerHTML = '<p class="empty">No rituals yet. Add your first one below.</p>';
+    return;
+  }
+  el.innerHTML = selfcareItems.map((item, i) => `
+    <div class="check-item" onclick="toggleSelfcare(${i})">
+      <div class="check-box ${item.done ? "checked" : ""}">${item.done ? "✓" : ""}</div>
+      <span class="check-label ${item.done ? "done" : ""}">${esc(item.label)}</span>
+      <button class="del-btn" onclick="event.stopPropagation(); deleteRitual(${i})" aria-label="Delete ${esc(item.label)}">×</button>
+    </div>
+  `).join("");
+}
+
+function toggleSelfcare(i) {
+  selfcareItems[i].done = !selfcareItems[i].done;
+  saveState();
+  renderSelfcare();
+  renderHomePreview();
+}
+
+function addRitual() {
+  const val = document.getElementById("ritual-input").value.trim();
+  if (!val) { toast("Type a ritual first."); return; }
+  selfcareItems.push({ label: val, done: false });
+  saveState();
+  renderSelfcare();
+  renderHomePreview();
+  closeModal("selfcare");
+  document.getElementById("ritual-input").value = "";
+  toast("Ritual saved");
+}
+
+function deleteRitual(i) {
+  if (!confirm("Delete this ritual?")) return;
+  selfcareItems.splice(i, 1);
+  saveState();
+  renderSelfcare();
+  renderHomePreview();
+}
+
+/* ---------- journal ---------- */
+function renderJournalHistory() {
+  const el = document.getElementById("journal-history");
+  if (!journalEntries.length) {
+    el.innerHTML = '<p class="empty">Your saved entries will appear here.</p>';
+    return;
+  }
+  el.innerHTML = journalEntries.map((e, i) => ({ e, i })).reverse().map(({ e, i }) => `
+    <div class="entry">
+      <div class="entry-head">
+        <p class="entry-meta">${esc(e.date)} · ${esc(e.prompt)}</p>
+        <button class="del-btn" onclick="deleteEntry(${i})" aria-label="Delete entry">×</button>
+      </div>
+      <p class="entry-text">${esc(e.text)}</p>
+    </div>
+  `).join("");
+}
+
+function saveJournal() {
+  const box = document.getElementById("journal-entry");
+  const text = box.value.trim();
+  if (!text) { toast("Write something first."); return; }
+  journalEntries.push({ date: new Date().toLocaleDateString(), text, prompt: shadowPrompts[promptIndex] });
+  box.value = "";
+  journalDraft = "";
+  saveState();
+  renderJournalHistory();
+  toast("Entry saved ✦");
+}
+
+function deleteEntry(i) {
+  if (!confirm("Delete this journal entry? This can't be undone.")) return;
+  journalEntries.splice(i, 1);
+  saveState();
+  renderJournalHistory();
+}
+
+/* ---------- interests, books, notes ---------- */
+function renderInterests() {
+  const el = document.getElementById("interests-tags");
+  el.innerHTML = interests.map((t, i) => `
+    <span class="tag ${t.active ? "active" : ""}" onclick="toggleInterest(${i})">${esc(t.name)}<span class="tag-x" onclick="event.stopPropagation(); deleteInterest(${i})" aria-label="Remove ${esc(t.name)}">×</span></span>
+  `).join("");
+}
+
+function toggleInterest(i) {
+  interests[i].active = !interests[i].active;
+  saveState();
+  renderInterests();
+}
+
+function addInterest() {
+  const val = document.getElementById("interest-input").value.trim();
+  if (!val) { toast("Type an interest first."); return; }
+  interests.push({ name: val, active: false });
+  saveState();
+  renderInterests();
+  closeModal("interest");
+  document.getElementById("interest-input").value = "";
+  toast("Interest saved");
+}
+
+function deleteInterest(i) {
+  if (!confirm("Remove this interest?")) return;
+  interests.splice(i, 1);
+  saveState();
+  renderInterests();
+}
+
+function renderBooks() {
+  const el = document.getElementById("reading-list");
+  if (!readingList.length) {
+    el.innerHTML = '<p class="empty">Your reading list is empty.</p>';
+    return;
+  }
+  el.innerHTML = readingList.map((b, i) => `
+    <div class="check-item" onclick="toggleBook(${i})">
+      <div class="check-box ${b.read ? "checked" : ""}">${b.read ? "✓" : ""}</div>
+      <span class="check-label ${b.read ? "done" : ""}">${esc(b.title)}</span>
+      <button class="del-btn" onclick="event.stopPropagation(); deleteBook(${i})" aria-label="Delete ${esc(b.title)}">×</button>
+    </div>
+  `).join("");
+}
+
+function toggleBook(i) {
+  readingList[i].read = !readingList[i].read;
+  saveState();
+  renderBooks();
+}
+
+function addBook() {
+  const val = document.getElementById("book-input").value.trim();
+  if (!val) { toast("Type a title first."); return; }
+  readingList.push({ title: val, read: false });
+  saveState();
+  renderBooks();
+  closeModal("book");
+  document.getElementById("book-input").value = "";
+  toast("Book saved");
+}
+
+function deleteBook(i) {
+  if (!confirm("Remove this book?")) return;
+  readingList.splice(i, 1);
+  saveState();
+  renderBooks();
+}
+
+function saveIdeas() {
+  ideasNotes = document.getElementById("ideas-notes").value;
+  saveState();
+  toast("Notes saved ✦");
+}
+
+/* ---------- goals & habits ---------- */
+function renderGoals() {
+  const el = document.getElementById("goals-list");
+  if (!goals.length) {
+    el.innerHTML = '<p class="empty">No goals yet. Add your first one below.</p>';
+    return;
+  }
+  el.innerHTML = goals.map((g, i) => `
+    <div class="goal-item">
+      <div class="goal-header">
+        <span class="goal-name">${esc(g.name)}</span>
+        <span>
+          <button class="goal-pct" onclick="bumpGoal(${i})" aria-label="Add 10 percent to ${esc(g.name)}">${g.pct}%</button>
+          <button class="del-btn" onclick="deleteGoal(${i})" aria-label="Delete ${esc(g.name)}">×</button>
+        </span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill ${esc(g.color)}" style="width:${g.pct}%"></div></div>
+    </div>
+  `).join("") + '<p class="hint">Tap a percentage to add 10%. At 100% it resets to 0%.</p>';
+}
+
+function bumpGoal(i) {
+  goals[i].pct = goals[i].pct >= 100 ? 0 : Math.min(100, goals[i].pct + 10);
+  saveState();
+  renderGoals();
+}
+
+function addGoal() {
+  const val = document.getElementById("goal-input").value.trim();
+  if (!val) { toast("Type a goal first."); return; }
+  const colors = ["", "sage", "rose"];
+  goals.push({ name: val, pct: 0, color: colors[goals.length % 3] });
+  saveState();
+  renderGoals();
+  closeModal("goal");
+  document.getElementById("goal-input").value = "";
+  toast("Goal saved");
+}
+
+function deleteGoal(i) {
+  if (!confirm("Delete this goal?")) return;
+  goals.splice(i, 1);
+  saveState();
+  renderGoals();
+}
+
+function renderHabits() {
+  const days = ["M","T","W","T","F","S","S"];
+  const t = todayIdx();
+  const el = document.getElementById("habit-tracker");
+  el.innerHTML = `
+    <div class="habit-row habit-head">
+      <span></span>${days.map((d, i) => `<span class="${i === t ? "today-col" : ""}">${d}</span>`).join("")}
+    </div>
+    ${habits.map(h => `
+      <div class="habit-row">
+        <span class="habit-name">${esc(h)}</span>
+        ${habitGrid[h].map((done, i) => `<button class="habit-cell ${done ? "on" : ""}" onclick="toggleHabit(${habits.indexOf(h)}, ${i})" aria-label="${esc(h)} ${days[i]}" aria-pressed="${done}"></button>`).join("")}
+      </div>
+    `).join("")}
+    <p class="hint">Resets every Monday.</p>
+  `;
+}
+
+function toggleHabit(h, d) {
+  const name = habits[h];
+  habitGrid[name][d] = !habitGrid[name][d];
+  saveState();
+  renderHabits();
+}
+
+/* ---------- navigation ---------- */
+function openModal(name) { document.getElementById("modal-" + name).classList.add("open"); }
+function closeModal(name) { document.getElementById("modal-" + name).classList.remove("open"); }
+
+document.querySelectorAll(".modal-overlay").forEach(m => {
+  m.addEventListener("click", e => { if (e.target === m) m.classList.remove("open"); });
+});
+
+function switchTab(name) {
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+  document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("active"));
+  document.getElementById("tab-" + name).classList.add("active");
+  const tab = document.querySelectorAll(".nav-tab")[TAB_ORDER.indexOf(name)];
+  if (tab) { tab.classList.add("active"); tab.scrollIntoView({ block: "nearest", inline: "center" }); }
+
+  document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+  const map = { home: 0, schedule: 1, journal: 2, selfcare: 3, interests: 4, goals: 4 };
+  const item = document.querySelectorAll(".nav-item")[map[name]];
+  if (item) item.classList.add("active");
+  window.scrollTo(0, 0);
+}
+
+function switchSection(name) { switchTab(name); }
+
+document.addEventListener("DOMContentLoaded", init);
+</script>
+
+</body>
+</html>
