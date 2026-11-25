@@ -1,6 +1,6 @@
 // Keeps the app opening when you're offline.
 // Tries the network first (so updates show up), falls back to the saved copy.
-const CACHE = "myranda-v1";
+const CACHE = "myranda-v2";
 const FILES = ["./", "index.html", "manifest.json", "icon-180.png", "icon-192.png", "icon-512.png"];
 
 self.addEventListener("install", e => {

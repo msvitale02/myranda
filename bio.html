@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#C4763A">
+<title>Myranda — links</title>
+<meta name="description" content="Myranda's links: wellness, movement, and a free daily planner.">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5EFE0; --cream-dark: #EBE0C8; --sand: #D4B896;
+    --terracotta: #C4763A; --terra-dark: #9C5C28; --terra-light: #E8976A;
+    --sage: #7A8C6E; --brown: #5C3D2A; --text: #3A2516; --text-muted: #7A6050; --white: #FDFAF4;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  .band {
+    height: 10px;
+    background: var(--terracotta);
+    background-image: repeating-linear-gradient(90deg,
+      transparent 0, transparent 8px, var(--terra-dark) 8px, var(--terra-dark) 10px,
+      transparent 10px, transparent 18px, var(--terra-light) 18px, var(--terra-light) 20px);
+  }
+  main { max-width: 440px; margin: 0 auto; padding: 2.5rem 1.25rem 3rem; text-align: center; }
+
+  .emblem { width: 96px; height: 96px; border-radius: 22px; display: block; margin: 0 auto 1.1rem; }
+  h1 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 32px; color: var(--brown); line-height: 1.15; }
+  .tagline { font-size: 15px; color: var(--text-muted); margin: 8px auto 0; max-width: 30ch; line-height: 1.5; }
+
+  .divider { display: flex; align-items: center; gap: 10px; margin: 1.6rem 0 1.3rem; }
+  .divider::before, .divider::after {
+    content: ''; flex: 1; height: 1px;
+    background: repeating-linear-gradient(90deg, var(--sand) 0, var(--sand) 4px, transparent 4px, transparent 8px);
+  }
+  .divider i { width: 8px; height: 8px; background: var(--terracotta); transform: rotate(45deg); display: block; }
+
+  .links { display: flex; flex-direction: column; gap: 12px; }
+  .link {
+    display: block;
+    text-decoration: none;
+    background: var(--white);
+    border: 1px solid var(--cream-dark);
+    border-left: 5px solid var(--terracotta);
+    border-radius: 14px;
+    padding: 14px 18px;
+    text-align: left;
+    color: var(--text);
+    transition: transform 0.15s, border-color 0.15s;
+  }
+  .link:nth-child(3n+2) { border-left-color: var(--sage); }
+  .link:nth-child(3n+3) { border-left-color: var(--terra-light); }
+  .link:hover, .link:focus-visible { transform: translateY(-2px); border-color: var(--sand); }
+  .link strong { display: block; font-size: 16px; font-weight: 500; }
+  .link span { display: block; font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+  .link.featured { background: var(--terracotta); border-color: var(--terracotta); border-left-color: var(--terra-dark); color: var(--white); }
+  .link.featured span { color: rgba(253,250,244,0.85); }
+
+  footer { margin-top: 2rem; font-size: 12px; color: var(--text-muted); }
+  a:focus-visible { outline: 2px solid var(--terra-dark); outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) { .link { transition: none; } }
+</style>
+</head>
+<body>
+<div class="band"></div>
+<main>
+  <img class="emblem" src="icon-512.png" alt="">
+  <h1 id="name">Myranda</h1>
+  <p class="tagline" id="tagline"></p>
+
+  <div class="divider" aria-hidden="true"><i></i></div>
+
+  <nav class="links" id="links" aria-label="My links"></nav>
+
+  <footer>✦</footer>
+</main>
+
+<script>
+/* ============================================================
+   EDIT THIS PART. Change the text, add links, or remove them.
+   A link with an empty "url" is hidden automatically, so you can
+   leave placeholders here until you have the address.
+   ============================================================ */
+const PROFILE = {
+  name: "Myranda",
+  tagline: "Wellness, movement, and a little bit of mystery.",
+  links: [
+    { title: "My free life planner", note: "Schedule, journal, self-care and goals in one app", url: "./", featured: true },
+    { title: "YouTube: Aurora After Dark", note: "Wellness meets the paranormal", url: "https://www.youtube.com/@TheAuroraAfterDark" },
+    { title: "Etsy shop", note: "Digital products", url: "" },
+    { title: "Instagram", note: "", url: "" },
+    { title: "TikTok", note: "", url: "" },
+    { title: "Contact", note: "Say hello", url: "" }
+  ]
+};
+/* ============================================================ */
+
+document.getElementById("name").textContent = PROFILE.name;
+document.getElementById("tagline").textContent = PROFILE.tagline;
+
+const box = document.getElementById("links");
+PROFILE.links.filter(l => l.url && l.url.trim()).forEach(l => {
+  const a = document.createElement("a");
+  a.className = "link" + (l.featured ? " featured" : "");
+  a.href = l.url;
+  if (/^https?:/i.test(l.url)) { a.target = "_blank"; a.rel = "noopener noreferrer"; }
+  const t = document.createElement("strong");
+  t.textContent = l.title;
+  a.appendChild(t);
+  if (l.note) {
+    const s = document.createElement("span");
+    s.textContent = l.note;
+    a.appendChild(s);
+  }
+  box.appendChild(a);
+});
+</script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 {
-  "name": "Myranda — My Life System",
-  "short_name": "Myranda",
+  "name": "My Life System",
+  "short_name": "My Life",
   "description": "My personal life system: schedule, journal, self-care, and goals",
   "start_url": "./",
   "scope": "./",

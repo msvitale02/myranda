@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#C4763A">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Myranda">
-<title>Myranda — My Life System</title>
+<meta name="apple-mobile-web-app-title" content="My Life">
+<title>My Life System — a free daily planner</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -755,6 +755,15 @@
     #toast, .progress-fill, .nav-tab { transition: none; }
   }
   button:focus-visible, .tag:focus-visible { outline: 2px solid var(--terracotta); outline-offset: 2px; }
+
+  .name-btn {
+    background: none; border: none; padding: 0; font: inherit; color: inherit;
+    cursor: pointer; text-decoration: underline dotted; text-underline-offset: 4px;
+    text-decoration-color: var(--sand);
+  }
+  .name-note { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px; }
+  .made-by { text-align: center; font-size: 12px; color: var(--text-muted); padding: 0 0 7rem; }
+  .made-by a { color: var(--terra-dark); }
 </style>
 </head>
 <body>
@@ -765,7 +774,7 @@
   <div class="header-top">
     <div class="greeting">
       <span id="time-greeting">Good morning,</span>
-      Myranda ✦
+      <button class="name-btn" id="user-name" onclick="openNameModal()" aria-label="Change your name">Friend</button> ✦
     </div>
     <div class="date-badge">
       <strong id="date-day">--</strong>
@@ -1075,6 +1084,18 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-name">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <p class="modal-title" id="name-title">Welcome</p>
+    <p class="name-note">This is your personal planner. What should it call you? Everything you write stays on this device only.</p>
+    <input type="text" id="name-input" placeholder="Your first name" maxlength="30" autocomplete="given-name">
+    <button class="save-btn" onclick="saveName()">Start</button>
+  </div>
+</div>
+
+<footer class="made-by">A free planner made by <a href="bio.html">Myranda</a> ✦</footer>
+
 <script>
 const quotes = [
   { text: "The most common form of despair is not being who you are.", author: "Søren Kierkegaard" },
@@ -1144,7 +1165,7 @@ let readingList = [
   { title: "Becoming — Michelle Obama", read: false }
 ];
 let goals = [
-  { name: "Finish semester strong", pct: 70, color: "" },
+  { name: "Build a steady morning routine", pct: 30, color: "" },
   { name: "Daily movement habit", pct: 45, color: "sage" },
   { name: "Read 12 books this year", pct: 25, color: "rose" }
 ];
@@ -1153,6 +1174,7 @@ let habitWeek = "";
 let selfcareDay = "";
 let ideasNotes = "";
 let journalDraft = "";
+let userName = "";
 
 /* ---------- helpers ---------- */
 function esc(s) {
@@ -1197,7 +1219,7 @@ function saveState() {
   try {
     localStorage.setItem(STORE_KEY, JSON.stringify({
       scheduleBlocks, selfcareItems, journalEntries, interests, readingList,
-      goals, habitGrid, habitWeek, selfcareDay, ideasNotes, journalDraft
+      goals, habitGrid, habitWeek, selfcareDay, ideasNotes, journalDraft, userName
     }));
   } catch (e) {
     if (!storageWarned) {
@@ -1223,6 +1245,7 @@ function loadState() {
       if (typeof s.selfcareDay === "string") selfcareDay = s.selfcareDay;
       if (typeof s.ideasNotes === "string") ideasNotes = s.ideasNotes;
       if (typeof s.journalDraft === "string") journalDraft = s.journalDraft;
+      if (typeof s.userName === "string") userName = s.userName;
     }
   } catch (e) { /* start fresh if saved data is unreadable */ }
 
@@ -1267,6 +1290,8 @@ function init() {
 
   saveState();
   renderAll();
+  renderName();
+  if (!userName) openNameModal(true);
 
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js").catch(() => {});
@@ -1608,6 +1633,27 @@ function toggleHabit(h, d) {
   renderHabits();
 }
 
+/* ---------- name ---------- */
+function renderName() {
+  document.getElementById("user-name").textContent = userName || "Friend";
+}
+
+function openNameModal(first) {
+  document.getElementById("name-title").textContent = first ? "Welcome" : "Change your name";
+  document.getElementById("name-input").value = userName;
+  openModal("name");
+  setTimeout(() => document.getElementById("name-input").focus(), 50);
+}
+
+function saveName() {
+  const v = document.getElementById("name-input").value.trim();
+  if (!v) { toast("Type your name first."); return; }
+  userName = v;
+  saveState();
+  renderName();
+  closeModal("name");
+}
+
 /* ---------- navigation ---------- */
 function openModal(name) { document.getElementById("modal-" + name).classList.add("open"); }
 function closeModal(name) { document.getElementById("modal-" + name).classList.remove("open"); }
@@ -1631,6 +1677,10 @@ function switchTab(name) {
 }
 
 function switchSection(name) { switchTab(name); }
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter" && document.getElementById("modal-name").classList.contains("open")) saveName();
+});
 
 document.addEventListener("DOMContentLoaded", init);
 </script>
